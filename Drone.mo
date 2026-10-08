@@ -5,5 +5,5 @@ equation
 
   annotation(
     uses(Modelica(version = "4.1.0")),
-  Icon(graphics = {Bitmap(origin = {0, -10}, extent = {{-140, -170}, {140, 170}}, fileName = "modelica://ModeloDrone/drone_white.png")}));
+  Icon(graphics = {Bitmap(extent = {{-140, -140}, {140, 140}}, fileName = "modelica://ModeloDrone/media/drone_white.png")}));
 end Drone;
