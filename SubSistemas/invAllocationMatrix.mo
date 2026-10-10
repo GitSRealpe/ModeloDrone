@@ -1,6 +1,6 @@
 within ModeloDrone.SubSistemas;
 
-block invAllocationMatrix "Quadcopter allocation matrix"
+block invAllocationMatrix "Quadcopter inverse allocation matrix"
   import Modelica.Blocks.Interfaces.RealInput;
   import Modelica.Blocks.Interfaces.RealOutput;
   import SI = Modelica.Units.SI;
@@ -10,15 +10,15 @@ block invAllocationMatrix "Quadcopter allocation matrix"
   parameter Real kf=1e-5  "Thrust coefficient";
   parameter Real km=1e-7  "Torque coefficient";
   
-  RealInput F_z(final quantity="Force", final unit = "N") "Total thrust" annotation(
+  RealInput F_z(final quantity="Force", final unit = "N") "Total force cmd" annotation(
     Placement(transformation(extent = {{-140, 55}, {-100, 95}}), iconTransformation(extent = {{-130, 55}, {-100, 85}})));
-  RealInput tau_x(unit = "N.m") "Roll torque" annotation(
+  RealInput tau_x(unit = "N.m") "Roll torque cmd" annotation(
     Placement(transformation(extent = {{-140, 5}, {-100, 45}}), iconTransformation(extent = {{-130, 5}, {-100, 35}})));
-  RealInput tau_y(unit = "N.m") "Pitch torque" annotation(
+  RealInput tau_y(unit = "N.m") "Pitch torque cmd" annotation(
     Placement(transformation(extent = {{-140, -45}, {-100, -5}}), iconTransformation(extent = {{-130, -45}, {-100, -15}})));
-  RealInput tau_z(unit = "N.m") "Yaw torque" annotation(
+  RealInput tau_z(unit = "N.m") "Yaw torque cmd" annotation(
     Placement(transformation(extent = {{-140, -95}, {-100, -55}}), iconTransformation(extent = {{-130, -95}, {-100, -65}})));
-  RealOutput w[4](each unit = "rad/s") "Rotor speeds" annotation(
+  RealOutput w[4](each unit = "rad/s") "Rotor speeds out" annotation(
     Placement(transformation(extent = {{100, -10}, {120, 10}}), iconTransformation(extent = {{100, -10}, {120, 10}})));
 protected
   

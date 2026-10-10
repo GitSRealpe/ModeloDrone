@@ -9,16 +9,13 @@ block AllocationMatrix "Quadcopter allocation matrix"
   parameter Real kf=1e-5  "Thrust coefficient";
   parameter Real km=1e-7  "Torque coefficient";
   
-  RealInput F_z(final quantity="Force", final unit = "N") "Total thrust" annotation(
-    Placement(transformation(extent = {{-140, 55}, {-100, 95}}), iconTransformation(extent = {{-130, 55}, {-100, 85}})));
-  RealInput tau_x(unit = "N.m") "Roll torque" annotation(
-    Placement(transformation(extent = {{-140, 5}, {-100, 45}}), iconTransformation(extent = {{-130, 5}, {-100, 35}})));
-  RealInput tau_y(unit = "N.m") "Pitch torque" annotation(
-    Placement(transformation(extent = {{-140, -45}, {-100, -5}}), iconTransformation(extent = {{-130, -45}, {-100, -15}})));
-  RealInput tau_z(unit = "N.m") "Yaw torque" annotation(
-    Placement(transformation(extent = {{-140, -95}, {-100, -55}}), iconTransformation(extent = {{-130, -95}, {-100, -65}})));
-  RealOutput w[4](each unit = "rad/s") "Rotor speeds" annotation(
-    Placement(transformation(extent = {{100, -10}, {120, 10}}), iconTransformation(extent = {{100, -10}, {120, 10}})));
+  RealInput w[4](each unit = "rad/s") "Rotor speeds input" annotation(
+    Placement(transformation(origin = {0, -76}, extent = {{-140, 55}, {-100, 95}}), iconTransformation(origin = {0, -70}, extent = {{-130, 55}, {-100, 85}}))); 
+  RealOutput F_z(final quantity="Force", final unit = "N") "Total force out" annotation(
+    Placement(transformation(origin = {240, -16}, extent = {{-140, 55}, {-100, 95}}), iconTransformation(origin = {230, -10}, extent = {{-130, 55}, {-100, 85}})));
+  RealOutput tau[3](each unit = "N.m") "Torques out" annotation(
+    Placement(transformation(origin = {240, -116}, extent = {{-140, 55}, {-100, 95}}), iconTransformation(origin = {230, -130}, extent = {{-130, 55}, {-100, 85}})));
+  
 protected
   
   Real d=l/sqrt(2);
