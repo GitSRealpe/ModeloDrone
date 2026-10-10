@@ -1,4 +1,5 @@
 AllocationMatrix
 ModeloMotor
 invAllocationMatrix
-ControladorRotores
+Controller3D
+ForceCompute
