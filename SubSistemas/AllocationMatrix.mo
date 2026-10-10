@@ -18,22 +18,19 @@ block AllocationMatrix "Quadcopter allocation matrix"
   
 protected
   
-  Real d=l/sqrt(2);
-  Real k=km/kf;
-  Real Ainv[4,4] = [1, -1/d,  1/d,  1/k;
-                              1, -1/d, -1/d, -1/k;
-                              1,  1/d, -1/d,  1/k;
-                              1,  1/d,  1/d, -1/k];
+  parameter Real d=l/sqrt(2);
+  parameter Real k=km/kf;
+  parameter Real A[4,4] = [-1, -1,  -1,  -1;
+                 -d, -d, d, d;
+                 d,  -d, -d, d;
+                 k,  -k,  k, -k];
 
-  Real w2[4] "Squared rotor speeds";
 equation
-  w2 = 1/(4*kf)* Ainv * {F_z, tau_x, tau_y, tau_z};
-  for i in 1:4 loop
-    w[i] = min(sqrt(max(w2[i], 0)), w_max);
-  end for;
+  
+  {F_z, tau[1], tau[2], tau[3]} =  A * (kf * w.^2);  
 
   annotation(
-    Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(lineColor = {0, 0, 127}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Text(textColor = {0, 0, 255}, extent = {{-150, 150}, {150, 110}}, textString = "%name"), Text(textColor = {0, 0, 127}, extent = {{-95, 95}, {-5, 55}}, textString = "Fz"), Text(textColor = {0, 0, 127}, extent = {{-95, 45}, {-5, 5}}, textString = "τx"), Text(textColor = {0, 0, 127}, extent = {{-95, -5}, {-5, -45}}, textString = "τy"), Text(textColor = {0, 0, 127}, extent = {{-95, -55}, {-5, -95}}, textString = "τz"), Text(textColor = {0, 0, 127}, extent = {{5, 20}, {95, -20}}, textString = "ω[4]")}),
+    Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(lineColor = {0, 0, 127}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Text(textColor = {0, 0, 255}, extent = {{-150, 150}, {150, 110}}, textString = "%name"), Text(origin = {126, -12},textColor = {0, 0, 127}, extent = {{-95, 95}, {-5, 55}}, textString = "Fz"), Text(origin = {120, -82},textColor = {0, 0, 127}, extent = {{-95, 45}, {-5, 5}}, textString = "τ[3]"), Text(origin = {-114, 4},textColor = {0, 0, 127}, extent = {{5, 20}, {95, -20}}, textString = "ω[4]")}),
     Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}})));
 
 end AllocationMatrix;

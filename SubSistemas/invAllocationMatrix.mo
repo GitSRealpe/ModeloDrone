@@ -22,12 +22,12 @@ block invAllocationMatrix "Quadcopter inverse allocation matrix"
     Placement(transformation(extent = {{100, -10}, {120, 10}}), iconTransformation(extent = {{100, -10}, {120, 10}})));
 protected
   
-  Real d=l/sqrt(2);
-  Real k=km/kf;
-  Real Ainv[4,4] = [1, -1/d,  1/d,  1/k;
-                              1, -1/d, -1/d, -1/k;
-                              1,  1/d, -1/d,  1/k;
-                              1,  1/d,  1/d, -1/k];
+  parameter Real d=l/sqrt(2);
+  parameter Real k=km/kf;
+  parameter Real Ainv[4,4] = [-1, -1/d,  1/d,  1/k;
+                              -1, -1/d, -1/d, -1/k;
+                              -1,  1/d, -1/d,  1/k;
+                              -1,  1/d,  1/d, -1/k];
 
   Real w2[4] "Squared rotor speeds";
 equation
