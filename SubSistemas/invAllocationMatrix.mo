@@ -5,10 +5,10 @@ block invAllocationMatrix "Quadcopter inverse allocation matrix"
   import Modelica.Blocks.Interfaces.RealOutput;
   import SI = Modelica.Units.SI;
   
-  parameter SI.Length l = 0.2 "Propeller distance to CoG";
-  parameter Real w_max(unit = "rad/s") = 1000 "Max rotor speed [rad/s]";
-  parameter Real kf=1e-5  "Thrust coefficient";
-  parameter Real km=1e-7  "Torque coefficient";
+  parameter SI.Length l "Propeller distance to CoG";
+  parameter Real w_max(unit = "rad/s") "Max rotor speed [rad/s]";
+  parameter Real kf    "Thrust coefficient";
+  parameter Real km  "Torque coefficient";
   
   RealInput F_z(final quantity="Force", final unit = "N") "Total force cmd" annotation(
     Placement(transformation(extent = {{-140, 55}, {-100, 95}}), iconTransformation(extent = {{-130, 55}, {-100, 85}})));

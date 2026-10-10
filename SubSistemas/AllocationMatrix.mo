@@ -5,9 +5,9 @@ block AllocationMatrix "Quadcopter allocation matrix"
   import Modelica.Blocks.Interfaces.RealOutput;
   import SI = Modelica.Units.SI;
   
-  parameter SI.Length l = 0.2 "Propeller distance to CoG";
-  parameter Real kf=1e-5  "Thrust coefficient";
-  parameter Real km=1e-7  "Torque coefficient";
+  parameter SI.Length l "Propeller distance to CoG";
+  parameter Real kf     "Thrust coefficient";
+  parameter Real km     "Torque coefficient";
   
   RealInput w[4](each unit = "rad/s") "Rotor speeds input" annotation(
     Placement(transformation(origin = {0, -76}, extent = {{-140, 55}, {-100, 95}}), iconTransformation(origin = {0, -70}, extent = {{-130, 55}, {-100, 85}}))); 
