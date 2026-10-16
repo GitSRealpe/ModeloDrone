@@ -3,3 +3,7 @@ ModeloMotor
 invAllocationMatrix
 Controller3D
 ForceCompute
+RotorMotorSimple
+MotorPowerSimple
+EnergyConsumption
+BatterySimple

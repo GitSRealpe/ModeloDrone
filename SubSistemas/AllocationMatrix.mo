@@ -20,10 +20,10 @@ protected
   
   parameter Real d=l/sqrt(2);
   parameter Real k=km/kf;
-  parameter Real A[4,4] = [-1, -1,  -1,  -1;
-                 -d, -d, d, d;
-                 d,  -d, -d, d;
-                 k,  -k,  k, -k];
+  parameter Real A[4,4] = [1, 1,  1,  1;
+                           -d, -d, d, d;
+                            d,  -d, -d, d;
+                            k,  -k,  k, -k];
 
 equation
   

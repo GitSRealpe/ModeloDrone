@@ -16,7 +16,7 @@ model ForceCompute
   
 equation
 
-  F = mass*(a-g);
+  F = mass*(a+g);
   
     annotation(
     Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(lineColor = {0, 0, 127}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid, extent = {{-100, 100}, {100, -100}}), Text(textColor = {0, 0, 255}, extent = {{-150, 150}, {150, 110}}, textString = "%name"), Text(origin = {128, -74},textColor = {0, 0, 127}, extent = {{-95, 95}, {-5, 55}}, textString = "F"), Text(origin = {-128, 4},textColor = {0, 0, 127}, extent = {{5, 20}, {95, -20}}, textString = "a")}),

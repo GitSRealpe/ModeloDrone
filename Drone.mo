@@ -13,6 +13,11 @@ model Drone
     Placement(transformation(origin = {38, 0}, extent = {{-10, -10}, {10, 10}})));
   SubSistemas.invAllocationMatrix invAllocMat(l=l, kf=kf, km=km, w_max=w_max) annotation(
     Placement(transformation(origin = {-12, 0}, extent = {{-10, -10}, {10, 10}})));
+  ModeloDrone.SubSistemas.RotorMotorSimple rotor[4](each wMax = w_max, each tauMotor = 0.1);
+  ModeloDrone.SubSistemas.MotorPowerSimple motorPower[4](each kPower=1e-8);
+  ModeloDrone.SubSistemas.EnergyConsumption energyConsumption;
+  ModeloDrone.SubSistemas.BatterySimple battery(capacity_Wh=20, initialSOC=1);
+  Modelica.Blocks.Math.Sum totalPower(nin=4);
   Modelica.Blocks.Sources.Constant const1(k = 0) annotation(
     Placement(transformation(origin = {-78, 2}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Sources.Constant const11(k = 0) annotation(
@@ -23,7 +28,7 @@ model Drone
     Placement(transformation(origin = {174, -30}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Mechanics.MultiBody.Forces.ForceAndTorque forceAndTorque(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameAB.frame_b)  annotation(
     Placement(transformation(origin = {126, -30}, extent = {{-10, -10}, {10, 10}})));
-  inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, 1})  annotation(
+  inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1})  annotation(
     Placement(transformation(origin = {44, -30}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Routing.Multiplex3 multiplex3 annotation(
     Placement(transformation(origin = {96, 14}, extent = {{-10, -10}, {10, 10}})));
@@ -31,7 +36,7 @@ model Drone
     Placement(transformation(origin = {38, 32}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Sources.Constant const14(k = 0) annotation(
     Placement(transformation(origin = {38, 62}, extent = {{-10, -10}, {10, 10}})));
-  SubSistemas.Controller3D vel_controller3D(controllerType = Modelica.Blocks.Types.SimpleController.PI) annotation(
+  SubSistemas.Controller3D vel_controller3D(controllerType=Modelica.Blocks.Types.SimpleController.PI, k={1, 1, 1}, Ti={1, 1, 1}, Td={0, 0, 0}, yMax={10, 10, 10}) annotation(
     Placement(transformation(origin = {-167, 27}, extent = {{-15, -15}, {15, 15}})));
   Modelica.Mechanics.MultiBody.Sensors.AbsoluteVelocity absoluteVelocity annotation(
     Placement(transformation(origin = {-10, -60}, extent = {{10, -10}, {-10, 10}}, rotation = -0)));
@@ -47,11 +52,20 @@ model Drone
     Placement(transformation(origin = {-358, 42}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
   Modelica.Mechanics.MultiBody.Sensors.AbsolutePosition absolutePosition annotation(
     Placement(transformation(origin = {-56, -82}, extent = {{10, -10}, {-10, 10}}, rotation = -0)));
-  ModeloDrone.SubSistemas.Controller3D pos_controller3D(controllerType = Modelica.Blocks.Types.SimpleController.P) annotation(
+  SubSistemas.Controller3D pos_controller3D(
+  controllerType=Modelica.Blocks.Types.SimpleController.P, k={1, 1, 0.3}, yMax={10, 10, 10}) annotation(
     Placement(transformation(origin = {-251, 27}, extent = {{-15, -15}, {15, 15}})));
 equation
-  connect(invAllocMat.w, allocMat.w) annotation(
-    Line(points = {{0, 0}, {26, 0}}, color = {0, 0, 127}, thickness = 0.5));
+  connect(totalPower.y, battery.P);
+  connect(totalPower.y, energyConsumption.P);
+  for i in 1:4 loop
+  connect(rotor[i].w, motorPower[i].w);
+  connect(motorPower[i].P, totalPower.u[i]);
+  end for;
+  for i in 1:4 loop
+    connect(invAllocMat.w[i], rotor[i].wCmd);
+    connect(rotor[i].w, allocMat.w[i]);
+  end for;
   connect(const1.y, invAllocMat.tau_x) annotation(
     Line(points = {{-67, 2}, {-24, 2}}, color = {0, 0, 127}));
   connect(const11.y, invAllocMat.tau_y) annotation(
