@@ -23,7 +23,7 @@ model Drone
     Placement(transformation(origin = {174, -30}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Mechanics.MultiBody.Forces.ForceAndTorque forceAndTorque(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameAB.frame_b)  annotation(
     Placement(transformation(origin = {126, -30}, extent = {{-10, -10}, {10, 10}})));
-  inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, 1})  annotation(
+  inner Modelica.Mechanics.MultiBody.World world(n = {0, 0, -1})  annotation(
     Placement(transformation(origin = {44, -30}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Routing.Multiplex3 multiplex3 annotation(
     Placement(transformation(origin = {96, 14}, extent = {{-10, -10}, {10, 10}})));
@@ -33,7 +33,7 @@ model Drone
     Placement(transformation(origin = {38, 62}, extent = {{-10, -10}, {10, 10}})));
   SubSistemas.Controller3D vel_controller3D(controllerType = Modelica.Blocks.Types.SimpleController.PI) annotation(
     Placement(transformation(origin = {-167, 27}, extent = {{-15, -15}, {15, 15}})));
-  Modelica.Mechanics.MultiBody.Sensors.AbsoluteVelocity absoluteVelocity annotation(
+  Modelica.Mechanics.MultiBody.Sensors.AbsoluteVelocity absoluteVelocity(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world)  annotation(
     Placement(transformation(origin = {-10, -60}, extent = {{10, -10}, {-10, 10}}, rotation = -0)));
   SubSistemas.ForceCompute forceCompute(mass=mass) annotation(
     Placement(transformation(origin = {-120, 28}, extent = {{-10, -10}, {10, 10}})));
@@ -45,7 +45,7 @@ model Drone
     Placement(transformation(origin = {-334, 84}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
   Modelica.Blocks.Routing.Multiplex3 multiplex4 annotation(
     Placement(transformation(origin = {-358, 42}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-  Modelica.Mechanics.MultiBody.Sensors.AbsolutePosition absolutePosition annotation(
+  Modelica.Mechanics.MultiBody.Sensors.AbsolutePosition absolutePosition(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world)  annotation(
     Placement(transformation(origin = {-56, -82}, extent = {{10, -10}, {-10, 10}}, rotation = -0)));
   ModeloDrone.SubSistemas.Controller3D pos_controller3D(controllerType = Modelica.Blocks.Types.SimpleController.P) annotation(
     Placement(transformation(origin = {-251, 27}, extent = {{-15, -15}, {15, 15}})));
