@@ -7,19 +7,14 @@ model Drone
   parameter Real kf = 1e-5 "Thrust coefficient";
   parameter Real km = 1e-7 "Torque coefficient";
   parameter Real w_max(unit = "rad/s") = 1000 "Max rotor speed";
-  parameter SI.Mass mass = 0.2;
+  parameter SI.Mass mass = 0.2 "Drone mass";
+  parameter Real Ixx = 0.0082, Iyy = 0.0082, Izz = 0.0149 "Drone inertia values";
 
   SubSistemas.AllocationMatrix allocMat(l=l, kf=kf, km=km) annotation(
     Placement(transformation(origin = {38, 0}, extent = {{-10, -10}, {10, 10}})));
   SubSistemas.invAllocationMatrix invAllocMat(l=l, kf=kf, km=km, w_max=w_max) annotation(
     Placement(transformation(origin = {-12, 0}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Sources.Constant const1(k = 0) annotation(
-    Placement(transformation(origin = {-78, 2}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Sources.Constant const11(k = 0) annotation(
-    Placement(transformation(origin = {-76, -40}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Blocks.Sources.Constant const12(k = 0) annotation(
-    Placement(transformation(origin = {-40, -42}, extent = {{-10, -10}, {10, 10}})));
-  Modelica.Mechanics.MultiBody.Parts.Body body(m = mass, angles_start (each displayUnit = "rad"), r_CM = {0, 0, 0})  annotation(
+  Modelica.Mechanics.MultiBody.Parts.Body body(m = mass, I_11 = Ixx, I_22 = Iyy, I_33 = Izz, angles_start (each displayUnit = "rad"), r_CM = {0, 0, 0})  annotation(
     Placement(transformation(origin = {174, -30}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Mechanics.MultiBody.Forces.ForceAndTorque forceAndTorque(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameAB.frame_b)  annotation(
     Placement(transformation(origin = {126, -30}, extent = {{-10, -10}, {10, 10}})));
