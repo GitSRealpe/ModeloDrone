@@ -27,7 +27,7 @@ model Drone
   Modelica.Blocks.Sources.Constant const14(k = 0) annotation(
     Placement(transformation(origin = {38, 62}, extent = {{-10, -10}, {10, 10}})));
   SubSistemas.Controller3D vel_controller3D(controllerType = Modelica.Blocks.Types.SimpleController.PI) annotation(
-    Placement(transformation(origin = {-167, 27}, extent = {{-15, -15}, {15, 15}})));
+    Placement(transformation(origin = {-179, 29}, extent = {{-15, -15}, {15, 15}})));
   Modelica.Mechanics.MultiBody.Sensors.AbsoluteVelocity absoluteVelocity(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world)  annotation(
     Placement(transformation(origin = {-10, -60}, extent = {{10, -10}, {-10, 10}}, rotation = -0)));
   SubSistemas.ForceCompute forceCompute(mass=mass) annotation(
@@ -41,20 +41,26 @@ model Drone
   Modelica.Blocks.Routing.Multiplex3 multiplex4 annotation(
     Placement(transformation(origin = {-358, 42}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
   Modelica.Mechanics.MultiBody.Sensors.AbsolutePosition absolutePosition(resolveInFrame = Modelica.Mechanics.MultiBody.Types.ResolveInFrameA.world)  annotation(
-    Placement(transformation(origin = {-56, -82}, extent = {{10, -10}, {-10, 10}}, rotation = -0)));
+    Placement(transformation(origin = {-50, -164}, extent = {{10, -10}, {-10, 10}})));
   ModeloDrone.SubSistemas.Controller3D pos_controller3D(controllerType = Modelica.Blocks.Types.SimpleController.P) annotation(
     Placement(transformation(origin = {-251, 27}, extent = {{-15, -15}, {15, 15}})));
+  SubSistemas.AttitudeController attitudeController(Ixx=Ixx, Iyy=Iyy, Izz=Izz) annotation(
+    Placement(transformation(origin = {-205, -49}, extent = {{-15, -15}, {15, 15}})));
   SubSistemas.OrientationSensor orientationSensor annotation(
     Placement(transformation(origin = {-95, -105}, extent = {{13, -13}, {-13, 13}}, rotation = -0)));
+  Modelica.Blocks.Sources.Constant testz1(k = 0) annotation(
+    Placement(transformation(origin = {-330, -92}, extent = {{-10, -10}, {10, 10}})));
+  Modelica.Blocks.Sources.Constant testx1(k = 0) annotation(
+    Placement(transformation(origin = {-338, -28}, extent = {{-10, -10}, {10, 10}}, rotation = 180)));
+  Modelica.Blocks.Sources.Constant testy1(k = 0.1) annotation(
+    Placement(transformation(origin = {-358, -86}, extent = {{-10, -10}, {10, 10}}, rotation = 90)));
+  Modelica.Blocks.Routing.Multiplex3 multiplex41 annotation(
+    Placement(transformation(origin = {-268, -62}, extent = {{-10, -10}, {10, 10}})));
+  Modelica.Blocks.Routing.DeMultiplex3 deMultiplex3 annotation(
+    Placement(transformation(origin = {-110, -18}, extent = {{-10, -10}, {10, 10}})));
 equation
   connect(invAllocMat.w, allocMat.w) annotation(
     Line(points = {{0, 0}, {26, 0}}, color = {0, 0, 127}, thickness = 0.5));
-  connect(const1.y, invAllocMat.tau_x) annotation(
-    Line(points = {{-67, 2}, {-24, 2}}, color = {0, 0, 127}));
-  connect(const11.y, invAllocMat.tau_y) annotation(
-    Line(points = {{-65, -40}, {-55.5, -40}, {-55.5, -2}, {-24, -2}}, color = {0, 0, 127}));
-  connect(const12.y, invAllocMat.tau_z) annotation(
-    Line(points = {{-29, -42}, {-23, -42}, {-23, -8}, {-24, -8}}, color = {0, 0, 127}));
   connect(allocMat.tau, forceAndTorque.torque) annotation(
     Line(points = {{50, -6}, {126, -6}, {126, -18}}, color = {0, 0, 127}, thickness = 0.5));
   connect(world.frame_b, forceAndTorque.frame_a) annotation(
@@ -80,15 +86,15 @@ equation
   connect(testx.y, multiplex4.u1[1]) annotation(
     Line(points = {{-333, 54}, {-352, 54}}, color = {0, 0, 127}));
   connect(vel_controller3D.y[3], forceCompute.a) annotation(
-    Line(points = {{-150.5, 27}, {-141, 27}, {-141, 28}, {-131.5, 28}}, color = {0, 0, 127}));
+    Line(points = {{-162.5, 29}, {-141, 29}, {-141, 28}, {-131.5, 28}}, color = {0, 0, 127}));
   connect(absoluteVelocity.v, vel_controller3D.u_m) annotation(
-    Line(points = {{-20, -60}, {-167, -60}, {-167, 9}}, color = {0, 0, 127}, thickness = 0.5));
+    Line(points = {{-20, -60}, {-167, -60}, {-167, 11}, {-179, 11}}, color = {0, 0, 127}, thickness = 0.5));
   connect(absolutePosition.frame_a, body.frame_a) annotation(
-    Line(points = {{-46, -82}, {164, -82}, {164, -30}}, color = {95, 95, 95}));
+    Line(points = {{-40, -164}, {164, -164}, {164, -30}}, color = {95, 95, 95}));
   connect(pos_controller3D.y, vel_controller3D.u_s) annotation(
-    Line(points = {{-234, 28}, {-184, 28}}, color = {0, 0, 127}, thickness = 0.5));
+    Line(points = {{-234, 28}, {-197, 28}, {-197, 29}}, color = {0, 0, 127}, thickness = 0.5));
   connect(absolutePosition.r, pos_controller3D.u_m) annotation(
-    Line(points = {{-66, -82}, {-250, -82}, {-250, 10}}, color = {0, 0, 127}, thickness = 0.5));
+    Line(points = {{-61, -164}, {-250, -164}, {-250, 10}}, color = {0, 0, 127}, thickness = 0.5));
   connect(multiplex4.y, pos_controller3D.u_s) annotation(
     Line(points = {{-358, 32}, {-358, 28}, {-268, 28}}, color = {0, 0, 127}, thickness = 0.5));
   connect(orientationSensor.frame_a, body.frame_a) annotation(
@@ -97,8 +103,24 @@ equation
     Line(points = {{-110, -112}, {-196, -112}, {-196, -66}}, color = {0, 0, 127}, thickness = 0.5));
   connect(orientationSensor.R, attitudeController.R_m) annotation(
     Line(points = {{-110, -98}, {-214, -98}, {-214, -66}}, color = {0, 0, 127}, thickness = 0.5));
+  connect(testz1.y, multiplex41.u3[1]) annotation(
+    Line(points = {{-319, -92}, {-319, -69}, {-280, -69}}, color = {0, 0, 127}));
+  connect(testy1.y, multiplex41.u2[1]) annotation(
+    Line(points = {{-358, -75}, {-358, -64.5}, {-280, -64.5}, {-280, -62}}, color = {0, 0, 127}));
+  connect(testx1.y, multiplex41.u1[1]) annotation(
+    Line(points = {{-349, -28}, {-375, -28}, {-375, -55}, {-280, -55}}, color = {0, 0, 127}));
+  connect(multiplex41.y, attitudeController.u_s) annotation(
+    Line(points = {{-256, -62}, {-222, -62}, {-222, -48}}, color = {0, 0, 127}, thickness = 0.5));
+  connect(attitudeController.y, deMultiplex3.u) annotation(
+    Line(points = {{-188, -48}, {-122, -48}, {-122, -18}}, color = {0, 0, 127}, thickness = 0.5));
+  connect(deMultiplex3.y1[1], invAllocMat.tau_x) annotation(
+    Line(points = {{-98, -10}, {-74, -10}, {-74, 2}, {-24, 2}}, color = {0, 0, 127}));
+  connect(deMultiplex3.y2[1], invAllocMat.tau_y) annotation(
+    Line(points = {{-98, -18}, {-44, -18}, {-44, -2}, {-24, -2}}, color = {0, 0, 127}));
+  connect(deMultiplex3.y3[1], invAllocMat.tau_z) annotation(
+    Line(points = {{-98, -24}, {-24, -24}, {-24, -8}}, color = {0, 0, 127}));
   annotation(
     uses(Modelica(version = "4.1.0")),
   Icon(graphics = {Bitmap(extent = {{-140, -140}, {140, 140}}, fileName = "modelica://ModeloDrone/media/drone_white.png")}, coordinateSystem(extent = {{-100, -100}, {100, 100}})),
-  Diagram(coordinateSystem(extent = {{-400, -100}, {400, 100}})));
+  Diagram(coordinateSystem(extent = {{-400, -200}, {400, 200}})));
 end Drone;
