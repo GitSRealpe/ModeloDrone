@@ -44,6 +44,8 @@ model Drone
     Placement(transformation(origin = {-56, -82}, extent = {{10, -10}, {-10, 10}}, rotation = -0)));
   ModeloDrone.SubSistemas.Controller3D pos_controller3D(controllerType = Modelica.Blocks.Types.SimpleController.P) annotation(
     Placement(transformation(origin = {-251, 27}, extent = {{-15, -15}, {15, 15}})));
+  SubSistemas.OrientationSensor orientationSensor annotation(
+    Placement(transformation(origin = {-95, -105}, extent = {{13, -13}, {-13, 13}}, rotation = -0)));
 equation
   connect(invAllocMat.w, allocMat.w) annotation(
     Line(points = {{0, 0}, {26, 0}}, color = {0, 0, 127}, thickness = 0.5));
@@ -89,6 +91,12 @@ equation
     Line(points = {{-66, -82}, {-250, -82}, {-250, 10}}, color = {0, 0, 127}, thickness = 0.5));
   connect(multiplex4.y, pos_controller3D.u_s) annotation(
     Line(points = {{-358, 32}, {-358, 28}, {-268, 28}}, color = {0, 0, 127}, thickness = 0.5));
+  connect(orientationSensor.frame_a, body.frame_a) annotation(
+    Line(points = {{-79, -105}, {164, -105}, {164, -30}}, color = {95, 95, 95}));
+  connect(orientationSensor.Omega, attitudeController.w_m) annotation(
+    Line(points = {{-110, -112}, {-196, -112}, {-196, -66}}, color = {0, 0, 127}, thickness = 0.5));
+  connect(orientationSensor.R, attitudeController.R_m) annotation(
+    Line(points = {{-110, -98}, {-214, -98}, {-214, -66}}, color = {0, 0, 127}, thickness = 0.5));
   annotation(
     uses(Modelica(version = "4.1.0")),
   Icon(graphics = {Bitmap(extent = {{-140, -140}, {140, 140}}, fileName = "modelica://ModeloDrone/media/drone_white.png")}, coordinateSystem(extent = {{-100, -100}, {100, 100}})),
