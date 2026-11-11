@@ -1,0 +1,77 @@
+// Script de simulacion para Version2 ModeloDrone
+// Experimentos del informe 1 - Perturbaciones y regimen estacionario a 2 m
+
+loadFile("DroneLibrary/package.mo");
+loadFile("DroneLibrary/Mechanical/package.mo");
+loadFile("DroneLibrary/Mechanical/Chassis/package.mo");
+loadFile("DroneLibrary/Mechanical/Chassis/Variants/package.mo");
+loadFile("DroneLibrary/Mechanical/Chassis/Templates/package.mo");
+loadFile("DroneLibrary/Mechanical/Blades/package.mo");
+loadFile("DroneLibrary/Mechanical/Blades/Templates/package.mo");
+loadFile("DroneLibrary/Mechanical/Blades/Variants/package.mo");
+loadFile("DroneLibrary/Blocks/package.mo");
+loadFile("DroneLibrary/Blocks/Routing/package.mo");
+loadFile("DroneLibrary/Blocks/Control/package.mo");
+loadFile("DroneLibrary/Blocks/Sources/package.mo");
+
+loadFile("DroneLibrary/Mechanical/Chassis/Templates/droneChassis.mo");
+loadFile("DroneLibrary/Mechanical/Blades/Templates/Blades.mo");
+loadFile("DroneLibrary/Mechanical/Chassis/Variants/droneChassis.mo");
+loadFile("DroneLibrary/Mechanical/Blades/Variants/Blades.mo");
+loadFile("DroneLibrary/Blocks/Routing/RealExtend.mo");
+
+loadFile("DroneSimulation/package.mo");
+loadFile("DroneSimulation/finalSubsystems/package.mo");
+loadFile("DroneSimulation/finalSubsystems/ForceCompute.mo");
+loadFile("DroneSimulation/finalSubsystems/Sensors.mo");
+loadFile("DroneSimulation/finalSubsystems/AeroDrag.mo");
+loadFile("DroneSimulation/finalSubsystems/WindProfile.mo");
+loadFile("DroneSimulation/finalSubsystems/Disturbances.mo");
+loadFile("DroneSimulation/finalSubsystems/Controller3D.mo");
+loadFile("DroneSimulation/finalSubsystems/ESC.mo");
+loadFile("DroneSimulation/finalSubsystems/ElectricPropeller.mo");
+loadFile("DroneSimulation/finalSubsystems/MotorMixerVoltage.mo");
+loadFile("DroneSimulation/finalSubsystems/FlightController.mo");
+loadFile("DroneSimulation/finalSubsystems/DronePlant.mo");
+loadFile("DroneSimulation/DroneBattery.mo");
+
+loadFile("DroneSimulation/Experimentos/package.mo");
+loadFile("DroneSimulation/Experimentos/ControlAltura.mo");
+loadFile("DroneSimulation/Experimentos/ControlAlturaPerturb.mo");
+loadFile("DroneSimulation/Experimentos/ControlAlturaPayload.mo");
+loadFile("DroneSimulation/Experimentos/RespuestaEscalonPosicion.mo");
+loadFile("DroneSimulation/Experimentos/PruebaMotores.mo");
+
+println("========================================");
+println("  EXPERIMENTOS VERSION2 - MODELO DRONE");
+println("========================================");
+
+println("");
+println("--- EXPERIMENTO 1: ControlAltura (2 m, sin disturbios) ---");
+simulateModel(DroneSimulation.Experimentos.ControlAltura, stopTime=10, outputFormat="mat", resultFile="ControlAltura_res");
+println("Simulacion ControlAltura completada.");
+
+println("");
+println("--- EXPERIMENTO 2: ControlAlturaPerturb (2 m, con viento) ---");
+simulateModel(DroneSimulation.Experimentos.ControlAlturaPerturb, stopTime=30, outputFormat="mat", resultFile="ControlAlturaPerturb_res");
+println("Simulacion ControlAlturaPerturb completada.");
+
+println("");
+println("--- EXPERIMENTO 3: ControlAlturaPayload (2 m, payload 50 g) ---");
+simulateModel(DroneSimulation.Experimentos.ControlAlturaPayload, stopTime=30, outputFormat="mat", resultFile="ControlAlturaPayload_res");
+println("Simulacion ControlAlturaPayload completada.");
+
+println("");
+println("--- EXPERIMENTO 4: RespuestaEscalonPosicion (2,3,2) ---");
+simulateModel(DroneSimulation.Experimentos.RespuestaEscalonPosicion, stopTime=15, outputFormat="mat", resultFile="RespuestaEscalonPosicion_res");
+println("Simulacion RespuestaEscalonPosicion completada.");
+
+println("");
+println("--- EXPERIMENTO 5: PruebaMotores (verificacion mixer) ---");
+simulateModel(DroneSimulation.Experimentos.PruebaMotores, stopTime=5, outputFormat="mat", resultFile="PruebaMotores_res");
+println("Simulacion PruebaMotores completada.");
+
+println("");
+println("========================================");
+println("  TODOS LOS EXPERIMENTOS COMPLETADOS");
+println("========================================");

@@ -8,8 +8,7 @@ annotation (
   Protection(access = Access.packageDuplicate),
   preferredView="info",
   uses(Modelica(version="4.0.0"),
-    Visualization(version="1.6"),
-    Modelica_DeviceDrivers(version="2.1.1")),
+    Visualization(version="1.6")),
   Icon(graphics={Bitmap(extent={{-80,-80},{80,80}},
     fileName="modelica://DroneLibrary/Resources/Images/dronepic.jpg")}));
 end DroneLibrary;

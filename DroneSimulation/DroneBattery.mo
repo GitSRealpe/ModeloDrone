@@ -2,17 +2,17 @@ within DroneSimulation;
 
 model DroneBattery
   import SI = Modelica.Units.SI;
-  parameter SI.Position x_ref = 2 annotation(Dialog(group = "Experiment"));
-  parameter SI.Position y_ref = 3 annotation(Dialog(group = "Experiment"));
-  parameter SI.Height z_ref = 10 annotation(Dialog(group = "Experiment"));
+  parameter SI.Position x_ref = 0 annotation(Dialog(group = "Experiment"));
+  parameter SI.Position y_ref = 0 annotation(Dialog(group = "Experiment"));
+  parameter SI.Height z_ref = 2 annotation(Dialog(group = "Experiment"));
   parameter Real Q_bat_Ah = 1.0 annotation(Dialog(group = "Experiment"));
   parameter Integer N_cells = 2 annotation(Dialog(group = "Experiment"));
   parameter SI.Mass m_payload(displayUnit = "g") = 0 annotation(Dialog(group = "Experiment"));
-  parameter SI.Velocity V_wind = 3 annotation(Dialog(group = "Wind"));
+  parameter SI.Velocity V_wind = 0 annotation(Dialog(group = "Wind"));
   parameter Real wind_dir_deg = 0 annotation(Dialog(group = "Wind"));
-  parameter SI.Velocity V_gust = 3 annotation(Dialog(group = "Wind"));
-  parameter SI.Time t_gust = 60 annotation(Dialog(group = "Wind"));
-  parameter SI.Velocity sigma_turb = 0.5 annotation(Dialog(group = "Wind"));
+  parameter SI.Velocity V_gust = 0 annotation(Dialog(group = "Wind"));
+  parameter SI.Time t_gust = 0 annotation(Dialog(group = "Wind"));
+  parameter SI.Velocity sigma_turb = 0 annotation(Dialog(group = "Wind"));
   parameter Integer seed = 1 annotation(Dialog(group = "Wind"));
   parameter SI.Area CdA_h = 0.015 annotation(Dialog(group = "Wind"));
   parameter Real maxTilt_deg = 25 annotation(Dialog(group = "Controller"));

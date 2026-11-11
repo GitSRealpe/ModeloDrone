@@ -12,8 +12,8 @@ model FlightController
   parameter Real k_pos[3] = {1, 1, 1} annotation(Dialog(group = "Tuning"));
   parameter Real k_vel[3] = {1, 1, 3} annotation(Dialog(group = "Tuning"));
   parameter Real Ti_vel[3] = {1, 1, 2} annotation(Dialog(group = "Tuning"));
-  parameter Real k_att[3] = {0.2, 0.2, 0.05} annotation(Dialog(group = "Tuning"));
-  parameter Real Td_att[3] = {0.15, 0.15, 0.3} annotation(Dialog(group = "Tuning"));
+  parameter Real k_att[3] = {0.05, 0.05, 0.05} annotation(Dialog(group = "Tuning"));
+  parameter Real Td_att[3] = {0.25, 0.25, 0.3} annotation(Dialog(group = "Tuning"));
 
   Modelica.Blocks.Interfaces.RealInput r_ref[3](each unit = "m") annotation(
     Placement(transformation(extent = {{-140, 40}, {-100, 80}})));
