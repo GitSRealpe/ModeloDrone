@@ -1,0 +1,25 @@
+% Definición del lenguaje Modelica para el paquete listings
+\lstdefinelanguage{Modelica}{
+  morekeywords={model,block,end,equation,initial,parameter,input,output,
+    import,within,extends,connect,annotation,if,then,else,elseif,for,in,
+    loop,protected,public,der,inner,outer,each,final,and,or,not,true,false,
+    Real,Boolean,Integer,sum,min,max,abs,sqrt,zeros,time},
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]",
+}
+\lstset{
+  language=Modelica,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{blue!70!black}\bfseries,
+  commentstyle=\color{green!45!black}\itshape,
+  stringstyle=\color{red!60!black},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  frame=single,
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1,
+}

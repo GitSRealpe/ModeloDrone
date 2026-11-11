@@ -1,0 +1,47 @@
+% =====================================================================
+%  Subsistemas añadidos al modelo Drone.mo
+%  Documento autónomo: cada sección de ./secciones puede copiarse o
+%  incluirse con \input{} en el informe principal (Modelado_Trabajo).
+% =====================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% Español si está instalado (Overleaf / texlive-lang-spanish); si no, inglés
+\IfFileExists{spanish.ldf}
+  {\usepackage[spanish,es-noshorthands,es-tabla]{babel}}
+  {\usepackage[english]{babel}}
+\usepackage{amsmath,amssymb}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{booktabs}
+% siunitx si está instalado; si no, sustituto mínimo de \SI y \si
+\IfFileExists{siunitx.sty}
+  {\usepackage{siunitx}\sisetup{output-decimal-marker={,}}}
+  {\input{secciones/siunitx_fallback}}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+\usepackage{hyperref}
+
+\input{secciones/modelica_listings}
+
+\title{Subsistemas eléctrico, de propulsión y de perturbaciones\\
+       \large Ampliación del modelo \texttt{ModeloDrone.Drone}}
+\author{Modelado y Simulación de Sistemas -- Grupo I}
+\date{}
+
+\begin{document}
+\maketitle
+
+\input{secciones/resumen}
+\input{secciones/motor}
+\input{secciones/esc}
+\input{secciones/bateria}
+\input{secciones/carga_perturbaciones}
+\input{secciones/integracion}
+\input{secciones/parametros}
+\input{secciones/codigo_modelica}
+
+\end{document}

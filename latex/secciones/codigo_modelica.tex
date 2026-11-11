@@ -1,0 +1,139 @@
+\section{Código Modelica de los subsistemas añadidos}
+\label{sec:codigo}
+
+Se muestran las ecuaciones de cada componente. Las anotaciones gráficas (iconos y
+posición de los conectores) se omiten por brevedad.
+
+\subsection{\texttt{SubSistemas.ModeloMotor}}
+\begin{lstlisting}
+model ModeloMotor "Equivalent DC motor + propeller load (one rotor)"
+  parameter SI.Resistance R "Armature resistance";
+  parameter SI.Inductance L "Armature inductance";
+  parameter Real ke(unit = "V.s/rad") "Back-EMF constant";
+  parameter Real kt(unit = "N.m/A") = ke "Torque constant (= ke in SI units)";
+  parameter SI.Inertia Jm "Rotor inertia (motor + propeller)";
+  parameter Real bm(unit = "N.m.s/rad") "Viscous friction coefficient";
+  parameter Real km(unit = "N.m.s2/rad2") "Propeller torque coefficient";
+  parameter Boolean steadyStateInit = true;
+  parameter SI.AngularVelocity w_start = 0;
+
+  RealInput  V(unit = "V") "Applied (equivalent) voltage";
+  RealOutput w(unit = "rad/s", start = w_start) "Rotor angular speed";
+  RealOutput i(unit = "A", start = km*w_start^2/kt) "Armature current";
+
+  SI.Torque tau_m "Electromagnetic torque";
+  SI.Torque tau_p "Propeller drag torque";
+  SI.Power  P_el  "Electrical power drawn";
+initial equation
+  if steadyStateInit then
+    der(i) = 0;
+    der(w) = 0;
+  else
+    i = 0;
+    w = w_start;
+  end if;
+equation
+  L*der(i) = V - R*i - ke*w;            // modelo eléctrico
+  tau_m = kt*i;
+  tau_p = km*w*abs(w);                  // = km w^2 para w >= 0
+  Jm*der(w) = tau_m - tau_p - bm*w;     // modelo mecánico
+  P_el = V*i;
+end ModeloMotor;
+\end{lstlisting}
+
+\subsection{\texttt{SubSistemas.ESC}}
+\begin{lstlisting}
+block ESC "Speed controller: rotor speed command -> motor voltage (4 rotors)"
+  parameter SI.Resistance R;
+  parameter Real ke(unit = "V.s/rad");
+  parameter Real kt(unit = "N.m/A") = ke;
+  parameter Real bm(unit = "N.m.s/rad");
+  parameter Real km(unit = "N.m.s2/rad2");
+  parameter Real kp(unit = "V.s/rad") = 0.05 "Proportional gain";
+  parameter Real ki(unit = "V/rad")   = 0.75 "Integral gain";
+  parameter Boolean steadyStateInit = true;
+
+  RealInput  w_ref[4](each unit = "rad/s") "Rotor speed commands";
+  RealInput  w_m[4](each unit = "rad/s")   "Measured rotor speeds";
+  RealInput  V_bat(unit = "V")             "Available battery voltage";
+  RealOutput V[4](each unit = "V")         "Motor voltages, 0 <= V <= V_bat";
+
+  Real e[4], x[4](each start = 0);
+  SI.Voltage V_ff[4], V_u[4];
+initial equation
+  if steadyStateInit then der(x) = zeros(4); else x = zeros(4); end if;
+equation
+  for j in 1:4 loop
+    e[j]    = w_ref[j] - w_m[j];
+    V_ff[j] = ke*w_ref[j] + R/kt*(km*w_ref[j]^2 + bm*w_ref[j]);
+    V_u[j]  = V_ff[j] + kp*e[j] + ki*x[j];
+    V[j]    = min(max(V_u[j], 0), V_bat);
+    der(x[j]) = if (V_u[j] > V_bat and e[j] > 0) or (V_u[j] < 0 and e[j] < 0)
+                then 0 else e[j];          // anti-windup
+  end for;
+end ESC;
+\end{lstlisting}
+
+\subsection{\texttt{SubSistemas.Bateria}}
+\begin{lstlisting}
+model Bateria "Battery as an energy reservoir with constant voltage until empty"
+  parameter SI.Voltage V_nom = 7.4 "Nominal voltage";
+  parameter Real C_Ah(unit = "A.h") = 0.5 "Nominal capacity";
+  parameter SI.Energy E_0 = V_nom*C_Ah*3600 "Initial stored energy";
+
+  RealInput  V[4](each unit = "V") "Motor voltages";
+  RealInput  i[4](each unit = "A") "Motor currents";
+  RealOutput V_bat(unit = "V")     "Available voltage";
+  RealOutput SOC(unit = "1")       "State of charge E/E_0";
+
+  SI.Energy E(start = E_0, fixed = true) "Stored energy";
+  SI.Power  P "Electrical power drawn by the motors";
+  Boolean empty = E <= 0;
+equation
+  P = sum(V[j]*i[j] for j in 1:4);
+  der(E) = -P;
+  V_bat = if empty then 0 else V_nom;
+  SOC = E/E_0;
+end Bateria;
+\end{lstlisting}
+
+\subsection{\texttt{SubSistemas.Perturbaciones}}
+\begin{lstlisting}
+model Perturbaciones "External forces in the inertial frame: drag + wind"
+  parameter Real c_d(unit = "N.s/m") = 0 "Linear drag coefficient";
+  parameter SI.Force F_wind[3] = {0, 0, 0} "Wind force, world frame";
+  parameter SI.Time t_wind = 0 "Wind start time";
+
+  Modelica.Mechanics.MultiBody.Interfaces.Frame_b frame_b;
+
+  SI.Velocity v[3]; SI.Force F_d[3], F_w[3], F[3];
+equation
+  v   = der(frame_b.r_0);
+  F_d = -c_d*v;
+  F_w = if time >= t_wind then F_wind else zeros(3);
+  F   = F_d + F_w;
+  frame_b.f = -Frames.resolve2(frame_b.R, F);   // como WorldForce
+  frame_b.t = zeros(3);
+end Perturbaciones;
+\end{lstlisting}
+
+\subsection{Cambios en \texttt{Drone}}
+\begin{lstlisting}
+parameter SI.Mass m_payload = 0 "Carried payload";
+parameter SI.Resistance R_mot = 0.1;  parameter SI.Inductance L_mot = 1e-4;
+parameter Real ke(unit = "V.s/rad") = 0.005;
+parameter SI.Inertia Jm = 2e-5;  parameter Real bm(unit = "N.m.s/rad") = 1e-6;
+parameter SI.Voltage V_bat = 7.4;  parameter Real C_bat(unit = "A.h") = 0.5;
+parameter Real c_d(unit = "N.s/m") = 0;
+parameter SI.Force F_wind[3] = {0, 0, 0};  parameter SI.Time t_wind = 0;
+parameter SI.AngularVelocity w_hover = sqrt((mass + m_payload)*g_n/(4*kf));
+
+SubSistemas.ESC esc(R = R_mot, ke = ke, bm = bm, km = km);
+SubSistemas.ModeloMotor motor[4](each R = R_mot, each L = L_mot, each ke = ke,
+  each Jm = Jm, each bm = bm, each km = km, each w_start = w_hover);
+SubSistemas.Bateria bateria(V_nom = V_bat, C_Ah = C_bat);
+SubSistemas.Perturbaciones perturbaciones(c_d = c_d, F_wind = F_wind, t_wind = t_wind);
+Modelica.Mechanics.MultiBody.Parts.Body body(m = mass + m_payload, ...,
+  r_0(each fixed = true), v_0(each fixed = true),
+  angles_fixed = true, w_0_fixed = true);
+\end{lstlisting}

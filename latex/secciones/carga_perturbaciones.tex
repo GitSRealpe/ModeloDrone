@@ -1,0 +1,66 @@
+\section{Carga transportada y perturbaciones externas}
+\label{sec:perturbaciones}
+
+\subsection{Carga transportada}
+La masa del sólido rígido pasa a ser la masa total
+\begin{equation}
+  m_{total} = m_d + m_c ,
+\end{equation}
+donde $m_c$ es el parámetro \texttt{m\_payload}, igual a $0$ por defecto. La carga se
+supone concentrada en el centro de gravedad, por lo que no modifica el tensor de
+inercia $J$. El bloque \texttt{ForceCompute} del controlador sigue usando la masa
+nominal $m_d$, es decir, el controlador \emph{desconoce} la carga. De este modo se
+puede estudiar la variación $m \rightarrow m + \Delta m$ (Modelado, ec.~41) y
+comprobar que la acción integral del lazo de velocidad compensa el peso añadido.
+
+La traslación del cuerpo queda, en el sistema inercial,
+\begin{equation}
+  m_{total}\, \dot{\mathbf{v}} = \mathbf{F}_T + \mathbf{F}_g + \mathbf{F}_d + \mathbf{F}_{wind},
+  \qquad
+  \mathbf{F}_g = \begin{bmatrix} 0 & 0 & -m_{total}\, g \end{bmatrix}^T .
+\end{equation}
+
+\paragraph{Carga máxima (pregunta 2.1 del Informe~1).}
+El empuje máximo está limitado por $\omega_{max}$ y por la tensión de la batería. La
+velocidad máxima alcanzable con $V_{bat}$ se obtiene de la condición de régimen
+permanente
+\begin{equation}
+  \frac{R\,k_m}{k_t}\,\omega^2 + \left(k_e + \frac{R\,b_m}{k_t}\right)\omega - V_{bat} = 0 ,
+\end{equation}
+que con los valores por defecto da $\omega \approx \SI{1042}{rad/s} > \omega_{max}$. El
+límite efectivo es, por tanto, $\omega_{max}$:
+\begin{equation}
+  m_{c,max} = \frac{4\,k_f\,\omega_{max}^2}{g} - m_d .
+\end{equation}
+
+\subsection{Resistencia aerodinámica}
+Se adopta un modelo lineal en la velocidad inercial:
+\begin{equation}
+  \mathbf{F}_d = -c_d\, \mathbf{v}
+\end{equation}
+Por defecto $c_d = 0$, que coincide con la simplificación del Informe~1, y puede
+activarse dándole un valor positivo.
+
+\subsection{Viento}
+Se modela como una fuerza constante en el sistema inercial que comienza en
+$t = t_{wind}$ (Modelado, ec.~40):
+\begin{equation}
+  \mathbf{F}_{wind}(t) =
+  \begin{cases}
+    \mathbf{0} & t < t_{wind} \\
+    \begin{bmatrix} F_x & F_y & F_z \end{bmatrix}^T & t \ge t_{wind}
+  \end{cases}
+\end{equation}
+Con $F_y = F_z = 0$ se recupera el caso $\mathbf{F}_{wind} = [F_x\;0\;0]^T$ del
+documento de modelado.
+
+\subsection{Aplicación sobre el cuerpo}
+El bloque \texttt{Perturbaciones} se conecta al \texttt{frame\_a} del sólido rígido y
+aplica $\mathbf{F} = \mathbf{F}_d + \mathbf{F}_{wind}$ del mismo modo que
+\texttt{MultiBody.Forces.WorldForce}. La fuerza, definida en el sistema inercial, se
+proyecta al sistema del conector mediante la matriz de orientación:
+\begin{equation}
+  \mathbf{f}_{frame} = -R^T\, \mathbf{F}, \qquad \boldsymbol{\tau}_{frame} = \mathbf{0},
+\end{equation}
+siendo $R$ la matriz de rotación cuerpo $\rightarrow$ inercial. La velocidad se obtiene
+como $\mathbf{v} = \dot{\mathbf{r}}_0$ a partir de la posición absoluta del conector.

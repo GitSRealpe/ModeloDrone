@@ -1,0 +1,51 @@
+\section{Controlador de velocidad de los motores (ESC equivalente)}
+\label{sec:esc}
+
+La matriz de asignación inversa (Modelado, ec.~30) proporciona las velocidades
+deseadas $\omega_i^{*}$, saturadas a $0 \le \omega_i^{*} \le \omega_{max}$
+(Modelado, ec.~42). Sin embargo, las entradas físicas del sistema son las tensiones
+de los motores, $\mathbf{u} = [V_1\;V_2\;V_3\;V_4]^T$ (Modelado, ec.~32). El bloque
+ESC cierra un lazo PI de velocidad por motor con un término de prealimentación
+basado en el modelo del motor.
+
+\subsection{Prealimentación}
+Imponiendo $\dot i_i = 0$ y $\dot\omega_i = 0$ en \eqref{eq:motor_elec} y
+\eqref{eq:motor_mec} con $\omega_i = \omega_i^{*}$ se obtiene la tensión de régimen
+permanente:
+\begin{equation}
+  V_{ff,i} = k_e\, \omega_i^{*} + \frac{R}{k_t}\left(k_m\, {\omega_i^{*}}^2 + b_m\, \omega_i^{*}\right)
+\end{equation}
+
+\subsection{Lazo PI con saturación}
+\begin{align}
+  e_i &= \omega_i^{*} - \omega_i \\
+  V_{u,i} &= V_{ff,i} + k_p\, e_i + k_i \int e_i\, dt \\
+  V_i &= \min\!\left(\max\left(V_{u,i},\,0\right),\, V_{bat}\right)
+  \label{eq:esc_sat}
+\end{align}
+La saturación \eqref{eq:esc_sat} representa la limitación física del actuador: el
+ESC no puede aplicar más tensión que la que entrega la batería ni invertir la
+polaridad. Para evitar la acumulación del integrador durante la saturación
+(\emph{anti-windup}) se usa integración condicional:
+\begin{equation}
+  \frac{d}{dt}\int e_i\,dt =
+  \begin{cases}
+    0   & \text{si } (V_{u,i} > V_{bat} \wedge e_i > 0) \;\vee\; (V_{u,i} < 0 \wedge e_i < 0) \\
+    e_i & \text{en otro caso}
+  \end{cases}
+\end{equation}
+
+\subsection{Ajuste}
+Linealizando \eqref{eq:motor_mec} en torno a $\omega_h$ y despreciando la dinámica
+eléctrica, cuya constante de tiempo es $L/R = \SI{1}{ms}$, se obtiene
+\begin{equation}
+  \dot{\omega} \approx \frac{k_t}{R\,J_m}\,\Delta V - a\,\Delta\omega,
+  \qquad
+  a = \frac{1}{J_m}\left(\frac{k_t k_e}{R} + 2 k_m \omega_h + b_m\right) \approx \SI{14.6}{s^{-1}} .
+\end{equation}
+Con $k_p = \SI{0.05}{V\,s/rad}$, el polo en lazo cerrado se sitúa en
+$a + \frac{k_t}{R J_m} k_p \approx \SI{140}{rad/s}$. Se elige
+$k_i = k_p\,a \approx \SI{0.75}{V/rad}$ para que el cero del PI cancele el polo
+mecánico. El lazo de motor resulta así más de diez veces más rápido que el lazo de
+actitud ($k_R = \SI{100}{s^{-2}}$, $\omega_n = \SI{10}{rad/s}$), de modo que la
+separación de escalas temporales en la cascada se mantiene.

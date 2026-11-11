@@ -1,0 +1,39 @@
+\section{Subsistema de la batería}
+\label{sec:bateria}
+
+La batería se modela como una reserva de energía que disminuye según la potencia
+eléctrica consumida por los cuatro motores:
+\begin{equation}
+  P = \sum_{i=1}^{4} V_i\, i_i , \qquad \frac{dE}{dt} = -P ,
+  \qquad E(0) = E_0 = V_{nom}\, C \cdot 3600
+  \label{eq:bateria}
+\end{equation}
+donde $C$ es la capacidad nominal en \si{A\,h}. La tensión disponible se considera
+constante hasta agotar la energía, momento en el que se da por terminado el vuelo:
+\begin{equation}
+  V_{bat} =
+  \begin{cases}
+    V_{nom} & \text{si } E > 0 \\
+    0       & \text{si } E \le 0
+  \end{cases}
+\end{equation}
+Como salida se proporciona también el estado de carga
+\begin{equation}
+  SOC = \frac{E}{E_0}.
+\end{equation}
+
+$V_{bat}$ realimenta al ESC como límite superior de la tensión aplicable. Por tanto,
+cuando la batería se agota los motores se detienen y el vehículo cae, lo que conecta
+el comportamiento mecánico del dron con su autonomía (preguntas de investigación
+2.2, 2.3 y 2.5 del Informe~1).
+
+\paragraph{Estimación de autonomía en vuelo estacionario.}
+Con los parámetros por defecto (tabla~\ref{tab:parametros}), en vuelo estacionario
+$\omega_h \approx \SI{221.5}{rad/s}$, $i_h \approx \SI{1.03}{A}$ y
+$V_h \approx \SI{1.21}{V}$ por motor. La potencia total es $P_h \approx \SI{4.96}{W}$,
+valor que coincide con el obtenido en la simulación. La autonomía estimada es
+\begin{equation}
+  t_{vuelo} \approx \frac{E_0}{P_h} = \frac{\SI{13320}{J}}{\SI{4.96}{W}} \approx \SI{45}{min}.
+\end{equation}
+Este valor depende de los parámetros provisionales de motor y hélice, que deben
+sustituirse por los del dron comercial de referencia.

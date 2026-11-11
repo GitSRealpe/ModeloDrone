@@ -1,0 +1,39 @@
+\section{Parámetros añadidos}
+\label{sec:parametros}
+
+Los valores de la tabla~\ref{tab:parametros} son provisionales y se han elegido para
+ser coherentes con $k_f$, $k_m$, $m_d$ y $\omega_{max}$ del modelo. Deben sustituirse
+por los del dron comercial de referencia (Informe~1, sección~5).
+
+\begin{table}[h]
+\centering
+\begin{tabular}{llll}
+\toprule
+Parámetro (Modelica) & Símbolo & Valor & Descripción \\
+\midrule
+\texttt{m\_payload}  & $m_c$      & \SI{0}{kg}              & Carga transportada \\
+\texttt{R\_mot}      & $R$        & \SI{0.1}{\ohm}          & Resistencia del inducido \\
+\texttt{L\_mot}      & $L$        & \SI{1e-4}{H}            & Inductancia del inducido \\
+\texttt{ke}          & $k_e = k_t$ & \SI{0.005}{V\,s/rad}   & Constante contraelectromotriz / de par \\
+\texttt{Jm}          & $J_m$      & \SI{2e-5}{kg\,m^2}      & Inercia motor + hélice \\
+\texttt{bm}          & $b_m$      & \SI{1e-6}{N\,m\,s/rad}  & Fricción viscosa \\
+\texttt{esc.kp}      & $k_p$      & \SI{0.05}{V\,s/rad}     & Ganancia proporcional del ESC \\
+\texttt{esc.ki}      & $k_i$      & \SI{0.75}{V/rad}        & Ganancia integral del ESC \\
+\texttt{V\_bat}      & $V_{nom}$  & \SI{7.4}{V}             & Tensión nominal (LiPo 2S) \\
+\texttt{C\_bat}      & $C$        & \SI{0.5}{A\,h}          & Capacidad nominal \\
+\texttt{c\_d}        & $c_d$      & \SI{0}{N\,s/m}          & Coeficiente de resistencia \\
+\texttt{F\_wind}     & $\mathbf{F}_{wind}$ & $[0\;0\;0]^T$ \si{N} & Fuerza de viento (inercial) \\
+\texttt{t\_wind}     & $t_{wind}$ & \SI{0}{s}               & Instante de inicio del viento \\
+\texttt{w\_hover}    & $\omega_h$ & $\sqrt{m_{total} g / 4k_f}$ & Velocidad de vuelo estacionario \\
+\bottomrule
+\end{tabular}
+\caption{Parámetros nuevos del modelo \texttt{Drone}.}
+\label{tab:parametros}
+\end{table}
+
+\paragraph{Variables de interés.} Además de las variables existentes, el modelo
+proporciona ahora: \texttt{motor[i].w} ($\omega_i$), \texttt{motor[i].i} ($i_i$),
+\texttt{esc.V[i]} ($V_i$), \texttt{bateria.P} ($P$), \texttt{bateria.E} ($E$),
+\texttt{bateria.SOC}, \texttt{perturbaciones.F} y la masa total \texttt{body.m}.
+Esto cubre las magnitudes enumeradas en la sección de resultados esperados del
+documento de modelado (corriente y velocidad de cada motor).

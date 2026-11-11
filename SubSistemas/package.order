@@ -1,5 +1,8 @@
 AllocationMatrix
 ModeloMotor
+ESC
+Bateria
+Perturbaciones
 invAllocationMatrix
 Controller3D
 ForceCompute

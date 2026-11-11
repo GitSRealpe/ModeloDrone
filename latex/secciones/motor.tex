@@ -1,0 +1,61 @@
+\section{Subsistema de los motores}
+\label{sec:motor}
+
+Cada motor sin escobillas, junto con su controlador electrónico, se representa mediante
+un modelo equivalente de motor de corriente continua. La tensión $V_i$ es la tensión
+equivalente aplicada al motor $i$, con $i = 1,\dots,4$.
+
+\subsection{Modelo eléctrico}
+\begin{equation}
+  V_i = R\, i_i + L \frac{d i_i}{dt} + k_e\, \omega_i
+  \qquad\Longrightarrow\qquad
+  \frac{d i_i}{dt} = \frac{1}{L}\left(V_i - R\, i_i - k_e\, \omega_i\right)
+  \label{eq:motor_elec}
+\end{equation}
+
+\subsection{Modelo mecánico}
+El par electromagnético es $\tau_{m,i} = k_t\, i_i$. La hélice ejerce un par resistente
+proporcional al cuadrado de la velocidad, que es el mismo par de reacción $Q_i$ que
+aparece en la matriz de asignación:
+\begin{equation}
+  \tau_{p,i} = Q_i = k_m\, \omega_i^2
+  \label{eq:motor_tau_p}
+\end{equation}
+\begin{equation}
+  J_m \frac{d\omega_i}{dt} = k_t\, i_i - k_m\, \omega_i^2 - b_m\, \omega_i
+  \label{eq:motor_mec}
+\end{equation}
+
+En la implementación se escribe $k_m\,\omega_i\,|\omega_i|$, que es idéntico a
+$k_m\,\omega_i^2$ para $\omega_i \ge 0$ y mantiene el signo correcto del par si el
+rotor llegase a girar en sentido contrario.
+
+\subsection{Empuje generado}
+La velocidad $\omega_i$ que sale de cada motor es la entrada de la matriz de asignación
+(Modelado, ec.~29), que calcula
+\begin{equation}
+  F_i = k_f\, \omega_i^2, \qquad F_z = \sum_{i=1}^{4} F_i ,
+\end{equation}
+donde $k_f$ es el coeficiente de empuje ($k_T$ en el Informe~1).
+
+\subsection{Potencia eléctrica}
+\begin{equation}
+  P_{el,i} = V_i\, i_i
+\end{equation}
+
+\subsection{Condición inicial}
+Por defecto (\texttt{steadyStateInit = true}) la simulación arranca con los motores en
+régimen estacionario, $\dot i_i = 0$ y $\dot\omega_i = 0$. Como valor inicial de
+iteración se usa la velocidad de vuelo estacionario
+\begin{equation}
+  \omega_h = \sqrt{\frac{m_{total}\, g}{4 k_f}} .
+\end{equation}
+
+\subsection{Estados}
+Cada motor aporta dos estados, $i_i$ y $\omega_i$. Los cuatro motores aportan
+\begin{equation}
+  \mathbf{x}_m = \begin{bmatrix} i_1 & i_2 & i_3 & i_4 & \omega_1 & \omega_2 & \omega_3 & \omega_4 \end{bmatrix}^T ,
+\end{equation}
+que, junto con los 12 estados del cuerpo rígido $\mathbf{x}_b$ (Modelado, ec.~20),
+dan los 20 estados físicos de $\mathbf{x} = [\mathbf{x}_b^T\;\mathbf{x}_m^T]^T$
+(Modelado, ec.~31).

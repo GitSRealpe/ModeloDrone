@@ -1,0 +1,44 @@
+\section{Elementos añadidos al modelo}
+\label{sec:resumen}
+
+El modelo \texttt{Drone.mo} implementaba la dinámica del cuerpo rígido, la matriz de
+asignación y su inversa, y el lazo de control en cascada
+(posición $\rightarrow$ velocidad $\rightarrow$ actitud). En él, las velocidades de los
+rotores calculadas por $A^{-1}$ se aplicaban directamente a la matriz de asignación,
+como si los motores fuesen ideales.
+
+Para cumplir con el alcance definido en el \emph{Informe~1} y en el documento de
+\emph{Modelado y simulación de cuadricóptero} se han añadido los siguientes
+subsistemas, cada uno como un componente Modelica independiente:
+
+\begin{itemize}
+  \item \textbf{Motores} (\texttt{SubSistemas.ModeloMotor}): modelo equivalente de
+        motor de corriente continua con su dinámica eléctrica y mecánica y la carga
+        de la hélice (Informe~1, ecs.~3--8).
+  \item \textbf{Controlador de velocidad / ESC} (\texttt{SubSistemas.ESC}): convierte
+        las velocidades de referencia $\omega_i^{*}$ en las tensiones $V_i$, que son
+        las entradas físicas del sistema (Modelado, ec.~32), con
+        $0 \le V_i \le V_{bat}$.
+  \item \textbf{Batería} (\texttt{SubSistemas.Bateria}): reserva de energía con
+        $\dot E = -P$ (Informe~1, ec.~9).
+  \item \textbf{Carga transportada}: $m_{total} = m_d + m_c$ (Informe~1, ec.~1;
+        Modelado, ec.~41).
+  \item \textbf{Perturbaciones} (\texttt{SubSistemas.Perturbaciones}): resistencia
+        aerodinámica $\mathbf{F}_d$ y viento $\mathbf{F}_{wind}$ (Modelado, ecs.~8
+        y~40).
+\end{itemize}
+
+Con ello, la cadena de causa y efecto del sistema queda completa:
+\begin{equation}
+  \text{Batería} \rightarrow V_i \rightarrow i_i \rightarrow \omega_i
+  \rightarrow F_i,\,Q_i \rightarrow \mathbf{F},\,\boldsymbol{\tau}
+  \rightarrow \text{Movimiento}
+\end{equation}
+
+\paragraph{Sistema de referencia.} No se ha modificado el sistema de referencia del
+modelo. El sistema inercial (\texttt{world}) mantiene la gravedad en $-z$
+($\mathbf{n} = [0\;0\;-1]^T$, eje $z$ vertical hacia arriba). El empuje sigue
+aplicándose sobre el eje $z$ del cuerpo (\texttt{forceAndTorque} resuelto en
+\texttt{frame\_b}), y los sensores de posición y velocidad siguen expresados en el
+sistema inercial. Las nuevas fuerzas de perturbación se definen directamente en el
+sistema inercial.

@@ -1,0 +1,75 @@
+\section{Integración en el modelo \texttt{Drone}}
+\label{sec:integracion}
+
+Los nuevos bloques se insertan entre la matriz de asignación inversa y la matriz de
+asignación, que antes estaban conectadas directamente:
+\begin{equation}
+  A^{-1} \xrightarrow{\;\omega_i^{*}\;} \text{ESC}
+  \xrightarrow{\;V_i\;} \text{Motores}
+  \xrightarrow{\;\omega_i\;} A \rightarrow \text{Cuerpo rígido}
+\end{equation}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  blk/.style={draw, rounded corners=2pt, minimum width=2.0cm, minimum height=0.9cm, align=center, font=\small},
+  sig/.style={-{Latex[length=2mm]}, thick},
+  node distance=0.8cm and 1.0cm]
+  \node[blk] (inv) {$A^{-1}$};
+  \node[blk, right=of inv] (esc) {ESC};
+  \node[blk, right=of esc] (mot) {Motores\\$\times 4$};
+  \node[blk, right=of mot] (A) {$A$};
+  \node[blk, right=of A] (body) {Cuerpo\\rígido};
+  \node[blk, below=1.2cm of mot] (bat) {Batería};
+  \node[blk, above=0.9cm of body] (pert) {Perturbaciones};
+
+  \draw[sig] (inv) -- node[above, font=\scriptsize]{$\omega_i^{*}$} (esc);
+  \draw[sig] (esc) -- node[above, font=\scriptsize]{$V_i$} (mot);
+  \draw[sig] (mot) -- node[above, font=\scriptsize]{$\omega_i$} (A);
+  \draw[sig] (A) -- node[above, font=\scriptsize]{$F_z,\boldsymbol\tau$} (body);
+  \draw[sig] (pert) -- node[right, font=\scriptsize]{$\mathbf{F}_d+\mathbf{F}_{wind}$} (body);
+  \draw[sig] (mot.north) -- ++(0,0.5) -| node[pos=0.25, above, font=\scriptsize]{$\omega_i$} (esc.north);
+  \draw[sig] ([xshift=4mm]mot.south) -- node[right, font=\scriptsize]{$i_i$} ([xshift=4mm]bat.north);
+  \draw[sig] (bat.west) -| node[pos=0.75, left, font=\scriptsize]{$V_{bat}$} ([xshift=-4mm]esc.south);
+  \draw[sig] ([xshift=4mm]esc.south) -- ++(0,-0.5) -| node[pos=0.75, left, font=\scriptsize]{$V_i$} ([xshift=-4mm]bat.north);
+\end{tikzpicture}
+\caption{Conexión de los subsistemas añadidos dentro de \texttt{Drone}.}
+\label{fig:integracion}
+\end{figure}
+
+\subsection{Conexiones en Modelica}
+\begin{lstlisting}
+connect(invAllocMat.w, esc.w_ref);   // w* -> ESC
+connect(esc.V, motor.V);             // V_i -> motores (vector de 4 componentes)
+connect(motor.w, allocMat.w);        // w_i -> matriz de asignación
+connect(motor.w, esc.w_m);           // realimentación de velocidad
+connect(esc.V, bateria.V);           // potencia consumida: V_i
+connect(motor.i, bateria.i);         //                   y  i_i
+connect(bateria.V_bat, esc.V_bat);   // límite de tensión
+connect(perturbaciones.frame_b, body.frame_a);
+\end{lstlisting}
+
+\subsection{Condiciones iniciales}
+El estado inicial del cuerpo se fija explícitamente en el origen del sistema inercial,
+en reposo y nivelado ($\mathbf{r}_0 = \mathbf{0}$, $\mathbf{v}_0 = \mathbf{0}$,
+$\boldsymbol\eta = \mathbf{0}$, $\boldsymbol\omega = \mathbf{0}$). Son los mismos
+valores que usaba implícitamente el modelo anterior. Fijarlos es necesario porque las
+nuevas condiciones de régimen permanente de motores y ESC introducen ecuaciones no
+lineales en la inicialización, y sin ellas el resolvedor podía desplazar la posición
+inicial del cuerpo.
+
+\subsection{Verificación}
+Con los parámetros por defecto y la referencia $\mathbf{p}_{ref} = [1\;0\;1]^T$, la
+trayectoria del modelo ampliado coincide con la del modelo anterior (por ejemplo,
+$\mathbf{p}(\SI{2}{s}) = [0.748\;0\;0.866]^T$ frente a $[0.748\;0\;0.867]^T$), ya que
+el lazo de los motores es mucho más rápido que los lazos externos. Además se han
+comprobado los siguientes casos:
+\begin{itemize}
+  \item Carga $m_c = \SI{0.1}{kg}$ (\SI{50}{\%} de $m_d$): caída inicial de altura y
+        recuperación de $z \rightarrow 1$ gracias a la acción integral.
+  \item Viento $F_x = \SI{0.3}{N}$ desde $t = \SI{5}{s}$ con $c_d = \SI{0.1}{N\,s/m}$:
+        desviación máxima en $x$ de unos \SI{0.46}{m} y vuelta a $x = \SI{1}{m}$.
+  \item Batería de \SI{0.002}{A\,h}: la energía se agota hacia $t \approx \SI{5.5}{s}$,
+        $V_{bat} \rightarrow 0$, los motores se detienen y el dron cae. La resistencia
+        aerodinámica tiende a $m_{total}\,g$ (velocidad terminal).
+\end{itemize}
