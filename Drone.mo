@@ -57,7 +57,8 @@ model Drone
   Modelica.Blocks.Routing.Multiplex3 multiplex41 annotation(
     Placement(transformation(origin = {-268, -62}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Routing.DeMultiplex3 deMultiplex3 annotation(
-    Placement(transformation(origin = {-110, -18}, extent = {{-10, -10}, {10, 10}})));
+  SubSistemas.AttitudeCompute attitudeCompute annotation(
+    Placement(transformation(origin = {-108, -66}, extent = {{-18, -18}, {18, 18}})));
 equation
   connect(invAllocMat.w, allocMat.w) annotation(
     Line(points = {{0, 0}, {26, 0}}, color = {0, 0, 127}, thickness = 0.5));
@@ -118,7 +119,12 @@ equation
   connect(deMultiplex3.y2[1], invAllocMat.tau_y) annotation(
     Line(points = {{-98, -18}, {-44, -18}, {-44, -2}, {-24, -2}}, color = {0, 0, 127}));
   connect(deMultiplex3.y3[1], invAllocMat.tau_z) annotation(
-    Line(points = {{-98, -24}, {-24, -24}, {-24, -8}}, color = {0, 0, 127}));
+  connect(attitudeCompute.rpy_d, attitudeController.u_s) annotation(
+    Line(points = {{-87, -66}, {-45.375, -66}, {-45.375, -62}, {-17.75, -62}}, color = {0, 0, 127}, thickness = 0.5));
+  connect(test_yaw.y, attitudeCompute.yaw_d) annotation(
+    Line(points = {{-192, -92}, {-129, -92}, {-129, -77}}, color = {0, 0, 127}));
+  connect(vel_controller3D.y, attitudeCompute.a_xy) annotation(
+    Line(points = {{-206, 28}, {-166, 28}, {-166, -56}, {-128, -56}}, color = {0, 0, 127}, thickness = 0.5));
   annotation(
     uses(Modelica(version = "4.1.0")),
   Icon(graphics = {Bitmap(extent = {{-140, -140}, {140, 140}}, fileName = "modelica://ModeloDrone/media/drone_white.png")}, coordinateSystem(extent = {{-100, -100}, {100, 100}})),

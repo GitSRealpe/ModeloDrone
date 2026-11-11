@@ -5,3 +5,4 @@ Controller3D
 ForceCompute
 AttitudeController
 OrientationSensor
+AttitudeCompute
