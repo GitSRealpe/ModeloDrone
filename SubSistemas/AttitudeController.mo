@@ -40,7 +40,8 @@ equation
         
   S  = transpose(R_m)*R_d - transpose(R_d)*R_m;
   eR = 0.5*{S[3,2], S[1,3], S[2,1]};
-  eW = w_m;                                  // Omega* = 0
+  eW = w_m;                                  // Omega desired = 0
+  // this can be antoher block, torque compute, fiz later maybe
   y  = J*(kR*eR - kW*eW) + cross(w_m, J*w_m);
         
         
