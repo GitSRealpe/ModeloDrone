@@ -1,0 +1,70 @@
+// Script de simulacion para Version1 del ModeloDrone
+// Ejecutar con: omc simulate.mos
+// MODELICAPATH debe apuntar al directorio padre que contiene ModeloDrone
+
+loadFile("package.mo");
+loadFile("Drone.mo");
+loadFile("SubSistemas/AllocationMatrix.mo");
+loadFile("SubSistemas/ModeloMotor.mo");
+loadFile("SubSistemas/invAllocationMatrix.mo");
+loadFile("SubSistemas/Controller3D.mo");
+loadFile("SubSistemas/ForceCompute.mo");
+loadFile("SubSistemas/AttitudeController.mo");
+loadFile("SubSistemas/OrientationSensor.mo");
+loadFile("SubSistemas/ThrustTiltCompute.mo");
+loadFile("SubSistemas/WindDisturbance.mo");
+loadFile("SubSistemas/ModeloBattery.mo");
+loadFile("Experimentos/ControlAltura.mo");
+loadFile("Experimentos/ControlAlturaPerturb.mo");
+loadFile("Experimentos/ControlAlturaPayload.mo");
+loadFile("Experimentos/RespuestaEscalonPosicion.mo");
+loadFile("Experimentos/BateriaDescarga.mo");
+loadFile("Experimentos/PruebaMotores.mo");
+
+println("");
+println("==========================================");
+println("  EXPERIMENTO 1: ControlAltura (2 m, sin disturbios)");
+println("==========================================");
+simulateModel(ModeloDrone.Experimentos.ControlAltura, stopTime=10, outputFormat="mat", resultFile="ControlAltura_res");
+println("Simulacion ControlAltura completada.");
+
+println("");
+println("==========================================");
+println("  EXPERIMENTO 2: ControlAlturaPerturb (2 m, con viento)");
+println("==========================================");
+simulateModel(ModeloDrone.Experimentos.ControlAlturaPerturb, stopTime=10, outputFormat="mat", resultFile="ControlAlturaPerturb_res");
+println("Simulacion ControlAlturaPerturb completada.");
+
+println("");
+println("==========================================");
+println("  EXPERIMENTO 3: ControlAlturaPayload (2 m, payload 50 g)");
+println("==========================================");
+simulateModel(ModeloDrone.Experimentos.ControlAlturaPayload, stopTime=10, outputFormat="mat", resultFile="ControlAlturaPayload_res");
+println("Simulacion ControlAlturaPayload completada.");
+
+println("");
+println("==========================================");
+println("  EXPERIMENTO 4: RespuestaEscalonPosicion (2,3,2)");
+println("==========================================");
+simulateModel(ModeloDrone.Experimentos.RespuestaEscalonPosicion, stopTime=15, outputFormat="mat", resultFile="RespuestaEscalonPosicion_res");
+println("Simulacion RespuestaEscalonPosicion completada.");
+
+println("");
+println("==========================================");
+println("  EXPERIMENTO 5: BateriaDescarga (hover 2 m, descarga batería)");
+println("==========================================");
+simulateModel(ModeloDrone.Experimentos.BateriaDescarga, stopTime=300, outputFormat="mat", resultFile="BateriaDescarga_res");
+println("Simulacion BateriaDescarga completada.");
+
+println("");
+println("==========================================");
+println("  EXPERIMENTO 6: PruebaMotores (matriz de asignacion)");
+println("==========================================");
+simulateModel(ModeloDrone.Experimentos.PruebaMotores, stopTime=5, outputFormat="mat", resultFile="PruebaMotores_res");
+println("Simulacion PruebaMotores completada.");
+
+println("");
+println("==========================================");
+println("  TODOS LOS EXPERIMENTOS FINALIZADOS");
+println("==========================================");
+exit();

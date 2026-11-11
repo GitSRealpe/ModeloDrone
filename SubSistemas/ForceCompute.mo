@@ -5,7 +5,7 @@ model ForceCompute
   import Modelica.Blocks.Interfaces.RealInput;
   import Modelica.Blocks.Interfaces.RealOutput;
   
-  parameter Real g=9.81;
+  parameter Real g=Modelica.Constants.g_n;
   parameter Real mass;
   
   RealInput a(unit = "m/s2") "Acceleration in" annotation(

@@ -1,0 +1,88 @@
+// Script de simulacion para OpenModelica (OMC)
+// Uso: omc +script run_experimentos.mos   o   dentro de OMC: >> loadFile("run_experimentos.mos")
+
+loadModelica(Modelica, "default");
+
+// Ruta al paquete del proyecto
+// Ajustar si OpenModelica no encuentra el paquete:
+// addFiles("C:/Users/under/Desktop/Modelado/Version1");
+
+// Cargar el paquete
+loadModel(ModeloDrone);
+
+// ========================================================================
+// Experimento 1: Estacionario (hover) a 2 m
+// ========================================================================
+simulate(
+  ModeloDrone.Experimentos.ExperimentoEstacionario2m,
+  startTime = 0,
+  stopTime = 10,
+  numberOfIntervals = 500,
+  outputFormat = "mat",
+  fileNamePrefix = "estacionario_2m",
+  resultFile = "estacionario_2m_res"
+);
+
+plot(
+  {drone.body.r_CM[3]},  // altura Z
+  {drone.absoluteVelocity.v[3]},  // velocidad vertical
+  {drone.invAllocMat.w[1], drone.invAllocMat.w[2], drone.invAllocMat.w[3], drone.invAllocMat.w[4]},  // velocidades rotor
+  window = "Estacionario 2m: altura y motores"
+);
+
+// ========================================================================
+// Experimento 2: Perturbacion de viento
+// ========================================================================
+simulate(
+  ModeloDrone.Experimentos.ExperimentoPerturbacionViento,
+  startTime = 0,
+  stopTime = 15,
+  numberOfIntervals = 750,
+  outputFormat = "mat",
+  fileNamePrefix = "perturbacion_viento",
+  resultFile = "perturbacion_viento_res"
+);
+
+plot(
+  {drone.body.r_CM[3]},
+  {drone.absoluteVelocity.v[1]},
+  window = "Perturbacion viento: altura y velocidad X"
+);
+
+// ========================================================================
+// Experimento 3: Respuesta a escalon de altitud
+// ========================================================================
+simulate(
+  ModeloDrone.Experimentos.RespuestaEscalonAltitud,
+  startTime = 0,
+  stopTime = 20,
+  numberOfIntervals = 1000,
+  outputFormat = "mat",
+  fileNamePrefix = "escalon_altitud",
+  resultFile = "escalon_altitud_res"
+);
+
+plot(
+  {drone.body.r_CM[3]},
+  window = "Escalon altitud: altura Z"
+);
+
+// ========================================================================
+// Experimento 4: Prueba de motores (abierta)
+// ========================================================================
+simulate(
+  ModeloDrone.Experimentos.PruebaMotores,
+  startTime = 0,
+  stopTime = 5,
+  numberOfIntervals = 250,
+  outputFormat = "mat",
+  fileNamePrefix = "prueba_motores",
+  resultFile = "prueba_motores_res"
+);
+
+plot(
+  {drone.invAllocMat.w[1], drone.invAllocMat.w[2], drone.invAllocMat.w[3], drone.invAllocMat.w[4]},
+  window = "Prueba motores: velocidades de rotor"
+);
+
+println("Simulaciones completadas. Revisar archivos .mat generados.");

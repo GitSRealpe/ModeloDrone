@@ -3,7 +3,9 @@ ModeloMotor
 invAllocationMatrix
 Controller3D
 ForceCompute
-RotorMotorSimple
-MotorPowerSimple
-EnergyConsumption
-BatterySimple
+AttitudeController
+OrientationSensor
+ThrustTiltCompute
+WindDisturbance
+ModeloBattery
+ModeloESC
