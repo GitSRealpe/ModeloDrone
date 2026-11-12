@@ -10,7 +10,7 @@ block AttitudeController
   parameter Real Iyy;
   parameter Real Izz;
   
-  parameter Real kR = 100 "1/s^2";
+  parameter Real kR = 35 "1/s^2";
   parameter Real kW = 20  "1/s";
 
   RealInput u_s[3] "Desired angles {roll, pitch, yaw} in rad" annotation(
