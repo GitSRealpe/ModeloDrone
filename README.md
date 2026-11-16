@@ -1,6 +1,9 @@
+#GITHUB_LINK:https://github.com/GitSRealpe/ModeloDrone
+
 # ModeloDrone
 
 Modelado y simulación de un cuadricóptero en OpenModelica con control en cascada (posición → velocidad → actitud), matriz de asignación/inversa, cuatro motores DC con hélice, controlador ESC equivalente (PI + prealimentación), batería como reserva de energía y perturbaciones externas (viento y arrastre aerodinámico).
+
 
    
 ![Dron](/media/drone_colors.png)
