@@ -11,7 +11,7 @@ block AttitudeController
   parameter Real Izz;
   
   parameter Real kR = 100 "1/s^2";
-  parameter Real kW = 20  "1/s";
+  parameter Real kW = 17  "1/s";
 
   RealInput u_s[3] "Desired angles {roll, pitch, yaw} in rad" annotation(
       Placement(transformation(origin = {0, -60}, extent = {{-140, 40}, {-100, 80}}), iconTransformation(origin = {0, -60}, extent = {{-140, 40}, {-100, 80}}))); 

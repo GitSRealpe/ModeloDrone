@@ -1,1 +1,8 @@
 /.vscode
+.git
+informe final/*
+Res_mat/datos_extraidos/*
+Res_mat/graficas_extra/*
+Experimentos/*.m
+Experimentos/*.py
+Experimentos/*.md
